@@ -16,6 +16,7 @@ using HotelManagement.Configurations;
 using HotelManagement.Data;
 using HotelManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace HotelManagement
 {
@@ -47,7 +48,7 @@ namespace HotelManagement
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HotelManagement", Version = "v1" });
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
