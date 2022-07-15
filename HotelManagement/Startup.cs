@@ -15,6 +15,7 @@ using AutoMapper;
 using HotelManagement.Configurations;
 using HotelManagement.Data;
 using HotelManagement.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -35,6 +36,10 @@ namespace HotelManagement
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
+
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+
             services.AddCors(o =>
             {
                 o.AddPolicy("CorsPolicy", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyHeader());
