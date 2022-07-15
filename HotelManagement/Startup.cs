@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HotelManagement.Configurations;
 using HotelManagement.Data;
+using HotelManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement
@@ -37,6 +38,8 @@ namespace HotelManagement
             {
                 o.AddPolicy("CorsPolicy", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyHeader());
             });
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddAutoMapper(typeof(MapperInitializer));
 
@@ -64,6 +67,7 @@ namespace HotelManagement
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/id?");
                 endpoints.MapControllers();
             });
         }
