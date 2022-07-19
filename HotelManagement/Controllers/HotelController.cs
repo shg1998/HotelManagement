@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HotelManagement.Models;
 using HotelManagement.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ namespace HotelManagement.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<IActionResult> GetHotels()
         {
             try

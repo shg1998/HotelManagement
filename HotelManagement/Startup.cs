@@ -1,22 +1,15 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using HotelManagement.Configurations;
 using HotelManagement.Data;
 using HotelManagement.Repositories;
-using Microsoft.AspNetCore.Identity;
+using HotelManagement.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace HotelManagement
@@ -39,16 +32,14 @@ namespace HotelManagement
 
             services.AddAuthentication();
             services.ConfigureIdentity();
-
+            services.ConfigureJwt(this.Configuration);
             services.AddCors(o =>
             {
                 o.AddPolicy("CorsPolicy", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyHeader());
             });
-
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IAuthManager, AuthManager>();
             services.AddAutoMapper(typeof(MapperInitializer));
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HotelManagement", Version = "v1" });
@@ -69,6 +60,7 @@ namespace HotelManagement
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
