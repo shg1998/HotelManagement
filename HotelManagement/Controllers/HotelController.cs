@@ -19,7 +19,8 @@ namespace HotelManagement.Controllers
         private readonly ILogger<HotelController> _logger;
         private readonly IMapper _mapper;
 
-        public HotelController(IUnitOfWork unitOfWork, ILogger<HotelController> logger, IMapper mapper)
+        public HotelController(IUnitOfWork unitOfWork, ILogger<HotelController> logger,
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -29,7 +30,6 @@ namespace HotelManagement.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize]
         public async Task<IActionResult> GetHotels()
         {
             try
@@ -41,10 +41,11 @@ namespace HotelManagement.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Something Went Wrong in the {nameof(GetHotels)}");
-                return StatusCode(500, "Internal Server Error . Please Try Again Later:)");
+                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -52,14 +53,14 @@ namespace HotelManagement.Controllers
         {
             try
             {
-                var hotel = await _unitOfWork.Hotels.Get(a => a.Id == id, new List<string> { "Country" });
+                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, new List<string> { "Country" });
                 var result = _mapper.Map<HotelDTO>(hotel);
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Something Went Wrong in the {nameof(GetHotel)}");
-                return StatusCode(500, "Internal Server Error . Please Try Again Later:)");
+                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
             }
         }
     }

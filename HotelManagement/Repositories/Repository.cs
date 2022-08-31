@@ -10,19 +10,40 @@ namespace HotelManagement.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly DatabaseContext _context;
         private readonly DbSet<T> _db;
 
-        public Repository(DatabaseContext dbContext)
+        public Repository(DatabaseContext context)
         {
-            _dbContext = dbContext;
-            _db = dbContext.Set<T>();
+            _context = context;
+            _db = _context.Set<T>();
+        }
+
+        public async Task Delete(int id)
+        {
+            var entity = await _db.FindAsync(id);
+            _db.Remove(entity);
+        }
+
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            _db.RemoveRange(entities);
+        }
+
+        public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
+        {
+            IQueryable<T> query = _db;
+            if (includes == null) return await query.AsNoTracking().FirstOrDefaultAsync(expression);
+            foreach (var includeProperty in includes) query = query.Include(includeProperty);
+            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
         }
 
         public async Task<IList<T>> GetAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
         {
             IQueryable<T> query = _db;
+
             if (expression != null) query = query.Where(expression);
+
             if (includes != null)
                 foreach (var includeProperty in includes)
                     query = query.Include(includeProperty);
@@ -32,32 +53,14 @@ namespace HotelManagement.Repositories
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
-        {
-            IQueryable<T> query = _db;
-            if (includes != null)
-                foreach (var includeProperty in includes)
-                    query = query.Include(includeProperty);
-
-            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
-        }
-
         public async Task Insert(T entity) => await _db.AddAsync(entity);
 
         public async Task InsertRange(IEnumerable<T> entities) => await _db.AddRangeAsync(entities);
 
-        public async Task Delete(int id)
-        {
-            var entity = await _db.FindAsync(id);
-            _db.Remove(entity);
-        }
-
-        public void DeleteRange(IEnumerable<T> entities) => _db.RemoveRange(entities);
-
         public void Update(T entity)
         {
-            _db.Attach(entity); // means pay attention to this:)
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _db.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
     }
 }
