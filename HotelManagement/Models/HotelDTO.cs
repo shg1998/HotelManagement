@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HotelManagement.Models
 {
-    public class HotelDTO : CreateHotelDTO
+    public class HotelDto : CreateHotelDto
     {
         public int Id { get; set; }
-        public CountryDTO Country { get; set; }
+        public CountryDto Country { get; set; }
     }
 
-    public class CreateHotelDTO
+    public class CreateHotelDto
     {
         [Required]
         [StringLength(maximumLength: 200, ErrorMessage = "Hotel Name is Too long !!")]
@@ -28,4 +28,8 @@ namespace HotelManagement.Models
 
     }
 
+    public class UpdateHotelDto : CreateHotelDto
+    {
+
+    }
 }
