@@ -1,23 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HotelManagement.Models
 {
-    public class CountryDTO: CreateCountryDTO
-    {
-        public int Id { get; set; }
-        public virtual IList<HotelDTO> Hotels { get; set; }
-    }
 
-    public class CreateCountryDTO
+    public class CreateCountryDto
     {
         [Required]
-        [StringLength(maximumLength: 50, ErrorMessage = "Country Name is Too long !!")]
+        [StringLength(maximumLength: 50, ErrorMessage = "Country Name Is Too Long")]
         public string Name { get; set; }
 
         [Required]
-        [StringLength(maximumLength: 5, ErrorMessage = "Country ShortName is Too long !!")]
+        [StringLength(maximumLength: 2, ErrorMessage = "Short Country Name Is Too Long")]
         public string ShortName { get; set; }
+    }
+    public class UpdateCountryDto : CreateCountryDto
+    {
+        public IList<CreateHotelDto> Hotels { get; set; }
+    }
+
+    public class CountryDto : CreateCountryDto
+    {
+        public int Id { get; set; }
+        public IList<HotelDto> Hotels { get; set; }
     }
 }
