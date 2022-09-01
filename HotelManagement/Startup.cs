@@ -30,6 +30,7 @@ namespace HotelManagement
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
+            services.AddMemoryCache();
             //services.ConfigureCacheHeaders();
             services.AddAuthentication();
             services.ConfigureIdentity();

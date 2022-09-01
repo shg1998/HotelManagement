@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Builder;
@@ -83,10 +84,30 @@ namespace HotelManagement
             });
         }
 
-        public static void ConfigureCacheHeaders(this IServiceCollection services)
-        {
-            services.AddResponseCaching();
-            services.AddHttpCacheHeaders();
-        }
+        //public static void ConfigureCacheHeaders(this IServiceCollection services)
+        //{
+        //    services.AddResponseCaching();
+        //    services.AddHttpCacheHeaders();
+        //}
+
+        //public static void ConfigureRateLimiting(this IServiceCollection services)
+        //{
+        //    var rateLimitRules = new List<RateLimitRule>
+        //    {
+        //        new RateLimitRule
+        //        {
+        //            Endpoint = "*",
+        //            Limit = 1,
+        //            Period = "1s"
+        //        }
+        //    };
+        //    services.Configure<IpRateLimitOptions>(options =>
+        //    {
+        //        options.GeneralRules = rateLimitRules;
+        //    });
+        //    services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+        //    services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+        //    services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        //}
     }
 }
