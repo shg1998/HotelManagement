@@ -5,6 +5,7 @@ using HotelManagement.Repositories;
 using HotelManagement.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ namespace HotelManagement
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
-
+            //services.ConfigureCacheHeaders();
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJwt(this.Configuration);
@@ -44,7 +45,14 @@ namespace HotelManagement
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HotelManagement", Version = "v1" });
             });
-            services.AddControllers().AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddControllers(options =>
+                {
+                    options.CacheProfiles.Add("120SecondsDuration", new CacheProfile
+                    {
+                        Duration = 120
+                    });
+                })
+                .AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.ConfigureVersioning();
         }
@@ -59,6 +67,9 @@ namespace HotelManagement
             app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
+
+            //app.UseResponseCaching();
+            //app.UseHttpCacheHeaders();
 
             app.UseCors("CorsPolicy");
 
