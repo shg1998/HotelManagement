@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Serilog;
+using AspNetCoreRateLimit;
 
 namespace HotelManagement
 {
@@ -90,24 +91,24 @@ namespace HotelManagement
         //    services.AddHttpCacheHeaders();
         //}
 
-        //public static void ConfigureRateLimiting(this IServiceCollection services)
-        //{
-        //    var rateLimitRules = new List<RateLimitRule>
-        //    {
-        //        new RateLimitRule
-        //        {
-        //            Endpoint = "*",
-        //            Limit = 1,
-        //            Period = "1s"
-        //        }
-        //    };
-        //    services.Configure<IpRateLimitOptions>(options =>
-        //    {
-        //        options.GeneralRules = rateLimitRules;
-        //    });
-        //    services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-        //    services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-        //    services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-        //}
+        public static void ConfigureRateLimiting(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>
+            {
+                new RateLimitRule
+                {
+                    Endpoint = "*",
+                    Limit = 1,
+                    Period = "1s"
+                }
+            };
+            services.Configure<IpRateLimitOptions>(options =>
+            {
+                options.GeneralRules = rateLimitRules;
+            });
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        }
     }
 }

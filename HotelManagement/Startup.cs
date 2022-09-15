@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using AutoMapper;
 using HotelManagement.Configurations;
 using HotelManagement.Data;
@@ -31,6 +32,9 @@ namespace HotelManagement
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
             services.AddMemoryCache();
+
+            services.ConfigureRateLimiting();
+            services.AddHttpContextAccessor();
             //services.ConfigureCacheHeaders();
             services.AddAuthentication();
             services.ConfigureIdentity();
@@ -71,7 +75,7 @@ namespace HotelManagement
 
             //app.UseResponseCaching();
             //app.UseHttpCacheHeaders();
-
+            app.UseIpRateLimiting();
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
